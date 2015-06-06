@@ -12,8 +12,9 @@
         android:text="0000-00-0000"
         android:ems="10"
         android:id="@+id/editText"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="126dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -21,8 +22,44 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/editText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="DLN"
+        android:id="@+id/textView"
+        android:layout_alignBottom="@+id/editText"
         android:layout_alignStart="@+id/editText"
-        android:layout_marginTop="95dp" />
+        android:layout_marginBottom="41dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Password"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/editText2"
+        android:layout_alignStart="@+id/editText2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Login"
+        android:id="@+id/textView3"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/button"
+        android:layout_below="@+id/editText2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp" />
 
 </RelativeLayout>
