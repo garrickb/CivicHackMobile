@@ -33,6 +33,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         /* Is this user already authenticated? */
+        SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
+        if(!settings.getString("key", "").isEmpty()) {
+            /* Redirect to the main activity. */
+            Intent mainIntent = new Intent(getApplicationContext(),LoggingScreen.class);
+            startActivity(mainIntent);
+            Toast.makeText(getApplicationContext(), "User is already authenticated.", Toast.LENGTH_LONG).show();
+        }
+
 
         /* Add a listener to the button. */
         dln = (EditText) findViewById(R.id.dlnText);
@@ -82,7 +90,7 @@ public class MainActivity extends Activity {
                     editor.commit();
 
                     /* Redirect to the main activity. */
-                    Intent mainIntent = new Intent(getApplicationContext(),BlankActivity.class);
+                    Intent mainIntent = new Intent(getApplicationContext(),LoggingScreen.class);
                     startActivity(mainIntent);
 
                 } catch (JSONException e) {
