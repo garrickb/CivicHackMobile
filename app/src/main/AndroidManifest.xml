@@ -22,6 +22,10 @@
             android:name=".BlankActivity"
             android:label="@string/title_activity_blank" >
         </activity>
+        <activity
+            android:name=".LoggingScreen"
+            android:label="@string/title_activity_blank" >
+        </activity>
     </application>
 
 </manifest>
