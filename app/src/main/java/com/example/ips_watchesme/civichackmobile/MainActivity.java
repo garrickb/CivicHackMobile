@@ -38,7 +38,6 @@ public class MainActivity extends Activity {
             /* Redirect to the main activity. */
             Intent mainIntent = new Intent(getApplicationContext(),LoggingScreen.class);
             startActivity(mainIntent);
-            Toast.makeText(getApplicationContext(), "User is already authenticated.", Toast.LENGTH_LONG).show();
         }
 
 
@@ -81,7 +80,6 @@ public class MainActivity extends Activity {
                 System.out.println("Successfully logged in.");
                 try {
                     JSONObject jsonObj = new JSONObject(response);
-                    Toast.makeText(getApplicationContext(), "SUCCESS: " + jsonObj.get("token"), Toast.LENGTH_LONG).show();
 
                     /*  Store the key in storage for future use.  */
                     SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
@@ -140,5 +138,10 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /* Disable the back button. */
+    @Override
+    public void onBackPressed() {
     }
 }

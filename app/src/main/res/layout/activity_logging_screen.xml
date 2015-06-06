@@ -10,7 +10,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:text="Start Recording"
-        android:id="@+id/StartStop"
+        android:id="@+id/startButton"
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -20,18 +20,19 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="00:00"
-        android:id="@+id/textView4"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/textTime"
+        android:textSize="50dp"
+        android:layout_below="@+id/startButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="67dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="0 miles"
-        android:id="@+id/textView5"
-        android:layout_marginTop="50dp"
-        android:layout_alignTop="@+id/textView4"
+        android:id="@+id/textDistance"
+        android:layout_below="@+id/textTime"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
