@@ -23,7 +23,9 @@
         android:ems="10"
         android:id="@+id/passwordText"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/dlnText" />
+        android:layout_alignStart="@+id/dlnText"
+        android:password="false"
+        android:textIsSelectable="false" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -61,5 +63,14 @@
         android:layout_below="@+id/passwordText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="43dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REGISTER"
+        android:id="@+id/registerButton"
+        android:layout_below="@+id/loginButton"
+        android:layout_alignStart="@+id/loginButton"
+        android:layout_marginTop="32dp" />
 
 </RelativeLayout>
