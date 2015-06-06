@@ -1,6 +1,9 @@
 package com.example.ips_watchesme.civichackmobile;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.view.Menu;
@@ -28,6 +31,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /* Is this user already authenticated? */
 
         /* Add a listener to the button. */
         dln = (EditText) findViewById(R.id.dlnText);
@@ -69,9 +74,20 @@ public class MainActivity extends Activity {
                 try {
                     JSONObject jsonObj = new JSONObject(response);
                     Toast.makeText(getApplicationContext(), "SUCCESS: " + jsonObj.get("token"), Toast.LENGTH_LONG).show();
+
+                    /*  Store the key in storage for future use.  */
+                    SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("key", jsonObj.get("token").toString());
+                    editor.commit();
+
+                    /* Redirect to the main activity. */
+                    Intent mainIntent = new Intent(getApplicationContext(),BlankActivity.class);
+                    startActivity(mainIntent);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "SUCCESS.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "SUCCESS, but no token was received.", Toast.LENGTH_LONG).show();
                 }
            }
 
