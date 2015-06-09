@@ -40,57 +40,9 @@ public class LoggingScreen extends Activity {
     private long startTime = 0;
     private int elapsedMin = 0, elapsedSecond = 0;
     private boolean timerRunning = false;
-    private float distance = 0;
-
-    private Location loc;
-
-    public void savePlayerLocation(final Context ctx){
-        try {
-            final LocationManager locationManager=(LocationManager)ctx.getSystemService(Context.LOCATION_SERVICE);
-                new Thread(new Runnable(){
-                    public void run(){
-                        try {
-                            Looper.prepare();
-                            final Timer t=new Timer();
-                            final LocationListener locationListener=new LocationListener(){
-                                public void onLocationChanged(Location location){
-                                    locationManager.removeUpdates(this);
-                                    t.cancel();
-
-                                    /* Log the change in distance. */
-                                    if(loc != null) {
-                                        distance += loc.distanceTo(location);
-                                    }
-                                    loc = location;
-
-                                    /* Update the UI. */
-                                    textDistance.setText(distance + " miles");
-
-                                    Looper.myLooper().quit();
-                                }
-                                public void onProviderDisabled(              String provider){
-                                }
-                                public void onProviderEnabled(              String provider){
-                                }
-                                public void onStatusChanged(              String provider,              int status,              Bundle extras){
-                                }
-                            }
-                                    ;
-                            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener,Looper.myLooper());
-                            Looper.loop();
-                        }
-                        catch (          Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                ).start();
-
-        }
-        catch (  Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private double distance = 0;
+    private Location location;
+    private GPSTracker gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +68,15 @@ public class LoggingScreen extends Activity {
 
         Timer time = new Timer();
 
+        gps = new GPSTracker(LoggingScreen.this);
+
+        /* Get starting position. */
+        if (gps.canGetLocation()) {
+            location = gps.getLocation();
+        }else {
+            gps.showSettingsAlert();
+        }
+
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if (timerRunning) {
@@ -125,10 +86,8 @@ public class LoggingScreen extends Activity {
                         elapsedMin++;
                     }
                     mHandler.obtainMessage(1).sendToTarget();
-                    savePlayerLocation(getApplicationContext());
+                    }
                 }
-
-            }
         }, 0, 1000);
 
         return true;
@@ -136,19 +95,24 @@ public class LoggingScreen extends Activity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            textTime.setText(((Integer.toString(elapsedMin).length() == 1)?"0":"") + elapsedMin + ":" + ((Integer.toString(elapsedSecond).length() == 1)?"0":"") + elapsedSecond); //this is the textview
+            textTime.setText(((Integer.toString(elapsedMin).length() == 1) ? "0" : "") + elapsedMin + ":" + ((Integer.toString(elapsedSecond).length() == 1) ? "0" : "") + elapsedSecond); //this is the textview
+            textDistance.setText(distance + " meters");
+
+            distance += location.distanceTo(gps.getLocation());
+            location = gps.getLocation();
         }
     };
 
     private void buttonPress(View v) {
         /* If the timer isn't running, let's keep track of the starting time. */
-        if(!timerRunning) {
+        if (!timerRunning) {
             /* reset the previous time. */
             elapsedSecond = 0;
             elapsedMin = 0;
+            distance = 0;
             textTime.setText("00:00");
 
-            startTime =  System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
             startButton.setText("STOP");
             startButton.setBackgroundColor(Color.RED);
 
@@ -219,7 +183,7 @@ public class LoggingScreen extends Activity {
             editor.commit();
 
             /* Redirect to the main activity. */
-            Intent mainIntent = new Intent(getApplicationContext(),MainActivity.class);
+            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainIntent);
 
             return true;
