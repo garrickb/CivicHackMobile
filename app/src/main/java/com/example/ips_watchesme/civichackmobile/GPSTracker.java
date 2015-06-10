@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,9 +15,24 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context mContext;
+    private double distance;
+    private boolean enabled;
+    private Location lastLocation;
+    private GoogleMap map;
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -32,10 +48,10 @@ public class GPSTracker extends Service implements LocationListener {
     double longitude; // longitude
 
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meter
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5; // 5 meter
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 5; // 5 seconds
+    private static final long MIN_TIME_BW_UPDATES = 500; // 1 seconds
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -43,6 +59,17 @@ public class GPSTracker extends Service implements LocationListener {
     public GPSTracker(Context context) {
         this.mContext = context;
         getLocation();
+
+        /* Get starting position. */
+        if (canGetLocation()) {
+            location = getLocation();
+        }else {
+            showSettingsAlert();
+        }
+    }
+
+    public void setMap(GoogleMap map) {
+        this.map = map;
     }
 
     public Location getLocation() {
@@ -181,6 +208,47 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
+        if(enabled) {
+            if (lastLocation != null) {
+                distance += lastLocation.distanceTo(location);
+            }
+
+
+            if(lastLocation != null) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+
+                PolylineOptions rectOptions = new PolylineOptions()
+                        .add(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                        .add(new LatLng(location.getLatitude(), location.getLongitude()));
+
+                // Get back the mutable Polyline
+                Polyline polyline = map.addPolyline(rectOptions);
+
+                Circle circle = map.addCircle(new CircleOptions()
+                        .center(latLng)
+                        .radius(2)
+                        .fillColor(Color.BLUE));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f));
+            }
+        }
+
+        lastLocation = location;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void enable() {
+        map.clear();
+        distance = 0;
+        enabled = true;
+    }
+
+    public void disable() {
+        enabled = false;
     }
 
     @Override

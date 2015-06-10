@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         android:debuggable="true"
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD6S0OLJHVradFvJR12DIi5vW04a-KI05s"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

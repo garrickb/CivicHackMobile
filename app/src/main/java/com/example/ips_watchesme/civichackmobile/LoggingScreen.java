@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,6 +18,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -32,7 +39,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class LoggingScreen extends Activity {
+public class LoggingScreen extends Activity implements OnMapReadyCallback {
 
     private Button startButton;
     private TextView textDistance;
@@ -40,14 +47,16 @@ public class LoggingScreen extends Activity {
     private long startTime = 0;
     private int elapsedMin = 0, elapsedSecond = 0;
     private boolean timerRunning = false;
-    private double distance = 0;
-    private Location location;
     private GPSTracker gps;
+    private GoogleMap mapObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logging_screen);
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -68,15 +77,6 @@ public class LoggingScreen extends Activity {
 
         Timer time = new Timer();
 
-        gps = new GPSTracker(LoggingScreen.this);
-
-        /* Get starting position. */
-        if (gps.canGetLocation()) {
-            location = gps.getLocation();
-        }else {
-            gps.showSettingsAlert();
-        }
-
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if (timerRunning) {
@@ -95,21 +95,18 @@ public class LoggingScreen extends Activity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            textTime.setText(((Integer.toString(elapsedMin).length() == 1) ? "0" : "") + elapsedMin + ":" + ((Integer.toString(elapsedSecond).length() == 1) ? "0" : "") + elapsedSecond); //this is the textview
-            textDistance.setText(distance + " meters");
-
-            distance += location.distanceTo(gps.getLocation());
-            location = gps.getLocation();
+            textTime.setText(((Integer.toString(elapsedMin).length() == 1) ?     "0" : "") + elapsedMin + ":" + ((Integer.toString(elapsedSecond).length() == 1) ? "0" : "") + elapsedSecond); //this is the textview
+            textDistance.setText(gps.getDistance() + " meters");
         }
     };
 
     private void buttonPress(View v) {
         /* If the timer isn't running, let's keep track of the starting time. */
         if (!timerRunning) {
+            gps.enable();
             /* reset the previous time. */
             elapsedSecond = 0;
             elapsedMin = 0;
-            distance = 0;
             textTime.setText("00:00");
 
             startTime = System.currentTimeMillis();
@@ -117,14 +114,14 @@ public class LoggingScreen extends Activity {
             startButton.setBackgroundColor(Color.RED);
 
         } else {
+            gps.disable();
             /* We're submitting the time to the database. */
             long elapsedTime = System.currentTimeMillis() - startTime;
-            Toast.makeText(getApplicationContext(), "Time: " + elapsedTime, Toast.LENGTH_LONG).show();
 
             RequestParams params = new RequestParams();
             params.put("startDate", startTime);
             params.put("endDate", System.currentTimeMillis());
-            params.put("distanceValue", distance);
+            params.put("distanceValue", gps.getDistance());
             params.put("distanceType", "m");
 
             AsyncHttpClient client = new AsyncHttpClient();
@@ -190,5 +187,14 @@ public class LoggingScreen extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mapObj = map;
+        map.setMyLocationEnabled(true);
+        map.setTrafficEnabled(true);
+        gps = new GPSTracker(LoggingScreen.this);
+        gps.setMap(map);
     }
 }
