@@ -192,9 +192,10 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         mapObj = map;
-        map.setMyLocationEnabled(true);
-        map.setTrafficEnabled(true);
-        gps = new GPSTracker(LoggingScreen.this);
-        gps.setMap(map);
+
+        Intent gpsTracker = new Intent(this, GPSTracker.class);
+        startService(gpsTracker);
+
+        gps = new GPSTracker(map);
     }
 }
