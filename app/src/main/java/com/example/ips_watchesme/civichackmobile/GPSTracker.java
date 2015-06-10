@@ -41,6 +41,10 @@ public class GPSTracker extends Service implements GoogleMap.OnMyLocationChangeL
 
     public void onLocationChanged(Location location) {
         if(enabled) {
+            CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition.Builder().target(new LatLng(location.getLatitude(),
+                            location.getLongitude())).target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(17).build());
+            map.animateCamera(myLoc);
             if (lastLocation != null) {
                 distance += lastLocation.distanceTo(location);
             }
@@ -73,7 +77,7 @@ public class GPSTracker extends Service implements GoogleMap.OnMyLocationChangeL
         /* Default to Indiana view. */
         CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder().target(new LatLng(39.7910, -86.1480)).zoom(6).build());
-        map.animateCamera(myLoc);
+        map.moveCamera(myLoc);
     }
 
     public double getDistance() {
@@ -84,6 +88,12 @@ public class GPSTracker extends Service implements GoogleMap.OnMyLocationChangeL
         map.clear();
         distance = 0;
         enabled = true;
+        if(lastLocation != null) {
+            CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition.Builder().target(new LatLng(lastLocation.getLatitude(),
+                            lastLocation.getLongitude())).target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).zoom(17).build());
+            map.moveCamera(myLoc);
+        }
     }
 
     public void disable() {
@@ -92,17 +102,12 @@ public class GPSTracker extends Service implements GoogleMap.OnMyLocationChangeL
 
     @Override
     public void onMyLocationChange(Location lastKnownLocation) {
+
         if(enabled) {
-            if(lastLocation == null)
-                lastLocation = lastKnownLocation;
-
-            CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(
-                    new CameraPosition.Builder().target(new LatLng(lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude())).zoom(17).build());
-            //map.animateCamera(myLoc);
-
             if(lastKnownLocation.distanceTo(lastLocation) > 20)
                 onLocationChanged(lastKnownLocation);
+        } else {
+            lastLocation = lastKnownLocation;
         }
     }
 
