@@ -103,12 +103,16 @@ public class GPSTracker extends Service implements GoogleMap.OnMyLocationChangeL
     @Override
     public void onMyLocationChange(Location lastKnownLocation) {
 
-        if(enabled) {
+        if(enabled && lastLocation != null && lastKnownLocation != null) {
             if(lastKnownLocation.distanceTo(lastLocation) > 20)
                 onLocationChanged(lastKnownLocation);
         } else {
             lastLocation = lastKnownLocation;
         }
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
     }
 
     @Override

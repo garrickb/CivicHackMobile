@@ -126,11 +126,11 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
 
             AsyncHttpClient client = new AsyncHttpClient();
             SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
-            client.addHeader("Authorization", settings.getString("key", ""));
+            client.addHeader("Authorization", settings.getString("key", settings.getString("key", "")));
             client.post("http://45.55.145.106:5000/api/trips", params, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, String response) {
-                    System.out.println("Successfully logged in.");
+                    System.out.println("Successfully sent trip data.");
                 }
 
                 @Override
@@ -142,6 +142,7 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
                         Toast.makeText(getApplicationContext(), "FAILURE: " + jsonObj.get("message"), Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        System.err.println(e.getMessage());
                         Toast.makeText(getApplicationContext(), "FAILURE.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -197,5 +198,8 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
         startService(gpsTracker);
 
         gps = new GPSTracker(map);
+
+        ((Button) findViewById(R.id.startButton)).setEnabled(true);
+
     }
 }
