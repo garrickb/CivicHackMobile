@@ -11,9 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Start Recording"
         android:id="@+id/startButton"
-        android:gravity="center_vertical|center_horizontal"
         android:layout_above="@+id/textTime"
-        android:layout_centerHorizontal="true"
         android:enabled="false"
         android:elegantTextHeight="false" />
 

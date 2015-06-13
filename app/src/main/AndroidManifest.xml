@@ -6,11 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ips"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <service android:name=".GPSTracker" />
-        android:debuggable="true"
         <meta-data
         android:name="com.google.android.maps.v2.API_KEY"
         android:value="AIzaSyD6S0OLJHVradFvJR12DIi5vW04a-KI05s" />
@@ -21,7 +20,6 @@
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

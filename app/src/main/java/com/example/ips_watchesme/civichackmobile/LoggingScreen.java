@@ -137,11 +137,11 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
 
             AsyncHttpClient client = new AsyncHttpClient();
             SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
-            client.addHeader("Authorization", settings.getString("key", settings.getString("key", "")));
+            client.addHeader("Authorization", settings.getString("key", ""));
             client.post("http://45.55.145.106:5000/api/trips", params, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, String response) {
-                    System.out.println("Successfully sent trip data.");
+                    System.out.println("Successfully submitted trip data.");
                 }
 
                 @Override
@@ -150,17 +150,17 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
                     //Toast.makeText(getApplicationContext(), "FAILURE: " + response, Toast.LENGTH_LONG).show();
                     try {
                         JSONObject jsonObj = new JSONObject(response);
-                        Toast.makeText(getApplicationContext(), "FAILURE: " + jsonObj.get("message"), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "FAILURE: " + jsonObj.get("message"), Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                         System.err.println(e.getMessage());
-                        Toast.makeText(getApplicationContext(), "FAILURE.", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "FAILURE.", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onRetry(int retryNo) {
-                    Toast.makeText(getApplicationContext(), "Retry: " + retryNo, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Retry: " + retryNo, Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -181,10 +181,6 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
-            //TODO: Popupwindow
-            Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
-
             /*  Remove key in storage.  */
             SharedPreferences settings = getSharedPreferences("Login", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
