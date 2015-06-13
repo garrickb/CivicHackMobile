@@ -25,7 +25,6 @@ public class MainActivity extends Activity {
     private EditText dln;
     private EditText password;
     private Button submitButton;
-    private Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +44,11 @@ public class MainActivity extends Activity {
         dln = (EditText) findViewById(R.id.dlnText);
         password = (EditText) findViewById(R.id.passwordText);
         submitButton = (Button) findViewById(R.id.loginButton);
-        registerButton = (Button) findViewById(R.id.registerButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 login(v);
-            }
-        });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Please contact your employer to be registered.", Toast.LENGTH_LONG).show();
             }
         });
     }

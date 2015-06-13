@@ -9,8 +9,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <service android:name=".GPSTracker" />
         android:debuggable="true"
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD6S0OLJHVradFvJR12DIi5vW04a-KI05s"/>
+        <meta-data
+        android:name="com.google.android.maps.v2.API_KEY"
+        android:value="AIzaSyD6S0OLJHVradFvJR12DIi5vW04a-KI05s" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -23,9 +26,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".LoggingScreen"
             android:label="@string/title_activity_logging"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden">
         </activity>
     </application>

@@ -35,6 +35,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -93,10 +94,20 @@ public class LoggingScreen extends Activity implements OnMapReadyCallback {
         return true;
     }
 
+    DecimalFormat df = new DecimalFormat("####0.00");
+
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             textTime.setText(((Integer.toString(elapsedMin).length() == 1) ?     "0" : "") + elapsedMin + ":" + ((Integer.toString(elapsedSecond).length() == 1) ? "0" : "") + elapsedSecond); //this is the textview
-            textDistance.setText(gps.getDistance() + " meters");
+            double meterToMile = 0.000621371;
+            double meterToFeet = 3.28084;
+            if(gps.getDistance() > 1610) {
+                //mi
+                textDistance.setText(df.format(meterToMile * gps.getDistance()) + " miles");
+            } else {
+                //ft
+                textDistance.setText(df.format(meterToFeet * gps.getDistance()) + " feet");
+            }
         }
     };
 
