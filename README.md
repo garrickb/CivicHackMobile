@@ -8,7 +8,7 @@ A video describing and demoing the entire application suite can be found [HERE](
 This application communicates with the backend Node.JS API through RESTful HTTP requests.
 
 ##Features
-- Allows the user to login and store the authorization ID in local storage so that the use can be remembered.
+- Allows the user to login and store the authorization ID in local storage so that the user can be remembered.
 
 - Drivers can begin/end trips, having their GPS coordinates tracked and marked on the map displayed on-screen.
 
